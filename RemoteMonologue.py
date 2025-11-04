@@ -111,10 +111,16 @@ class RemoteOperations:
         # First of all stop the service if it was originally stopped
         if self.__shouldStop is True:
             logging.info('Stopping service %s' % self.__serviceName)
-            scmr.hRControlService(self.__scmr, self.__serviceHandle, scmr.SERVICE_CONTROL_STOP)
+            try:
+                scmr.hRControlService(self.__scmr, self.__serviceHandle, scmr.SERVICE_CONTROL_STOP)
+            except Exception as e:
+                logging.error(f"An unexpected error occurred: {e}")
         if self.__disabled is True:
             logging.info('Restoring the disabled state for service %s' % self.__serviceName)
-            scmr.hRChangeServiceConfigW(self.__scmr, self.__serviceHandle, dwStartType=0x4)
+            try:
+                scmr.hRChangeServiceConfigW(self.__scmr, self.__serviceHandle, dwStartType=0x4)
+            except Exception as e:
+                logging.error(f"An unexpected error occurred: {e}")
 
     def finish(self):
         self.__restore()
@@ -1081,7 +1087,7 @@ if __name__ == '__main__':
 |  \ |___  |  | \__/  |  |___  |  | \__/ | \| \__/ |___ \__/ \__> \__/ |___ 
                                                                             
                                   
-                        v1.2.0 - @AndrewOliveau
+                        v1.2.1 - @AndrewOliveau
                                                 """ + text_end)
 
     parser = argparse.ArgumentParser(add_help = True, description = "DCOM NTLM authentication coercer and sprayer")
